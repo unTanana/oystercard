@@ -3,7 +3,7 @@ import { OysterCard } from "./oyster-card";
 import { Zone } from "./zone";
 
 export class TravelManager {
-  lastEnteredZone: Zone;
+  lastEnteredZones: Zone[];
   oysterCard: OysterCard;
 
   private busFare = 1.8;
@@ -15,20 +15,30 @@ export class TravelManager {
 
   enterStation = (station: Station) => {
     this.oysterCard.deduct(this.maxFare);
-    this.lastEnteredZone = station.zone;
+    this.lastEnteredZones = station.zones;
   };
 
   leaveStation = (station: Station) => {
-    const reimbursement = station.zone.getFareReturn(
-      this.lastEnteredZone.number
-    );
+    const newZones = station.zones;
 
-    this.oysterCard.add(reimbursement);
-    this.lastEnteredZone = station.zone;
+    const possibleReimbursements: number[] = [];
+    newZones.forEach((newZone) => {
+      const previousZones = this.lastEnteredZones;
+
+      previousZones.forEach((previousZone) => {
+        const fareReturn = newZone.getFareReturn(previousZone.number);
+        possibleReimbursements.push(fareReturn);
+      });
+    });
+
+    const maxReimbursement = Math.max(...possibleReimbursements);
+
+    this.oysterCard.add(maxReimbursement);
+    this.lastEnteredZones = station.zones;
   };
 
   travelByBus = (station: Station) => {
-    this.lastEnteredZone = station.zone;
+    this.lastEnteredZones = station.zones;
     this.oysterCard.deduct(this.busFare);
   };
 }
