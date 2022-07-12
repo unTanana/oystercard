@@ -20,11 +20,11 @@ export class TravelManager {
 
   leaveStation = (station: Station) => {
     const newZones = station.zones;
+    const previousZones = this.lastEnteredZones;
 
     const possibleReimbursements: number[] = [];
-    newZones.forEach((newZone) => {
-      const previousZones = this.lastEnteredZones;
 
+    newZones.forEach((newZone) => {
       previousZones.forEach((previousZone) => {
         const fareReturn = newZone.getFareReturn(previousZone.number);
         possibleReimbursements.push(fareReturn);
