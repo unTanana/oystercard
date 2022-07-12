@@ -41,6 +41,16 @@ describe("TravelManager", () => {
     expect(travelManager.lastEnteredZone).toBe(stationB.zone);
   });
 
+  it("should be charged the maximum amount of 3.2 pounds for entering a station and not leaving", () => {
+    const station: Station = {
+      name: "A",
+      zone: zone3,
+    };
+
+    travelManager.enterStation(station);
+    expect(oysterCard.balance).toBe(initialCardBalance - 3.2);
+  });
+
   it("should be able to travel by bus", () => {
     const station = {
       name: "A",
@@ -94,8 +104,7 @@ describe("TravelManager", () => {
     expect(travelManager.oysterCard.balance).toBe(initialCardBalance - 3.2);
   });
 
-  it(`
-  Traveling:
+  it(`Traveling:
     - Tube Holborn(1) to Earl's Court(1,2) // treated as zone 1
     - 328 bus from Earl's Court(1) to Chelsea(1 according to google)
     - Tube Earl's court(1) to Hammersmith(2)

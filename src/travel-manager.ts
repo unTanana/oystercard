@@ -7,18 +7,23 @@ export class TravelManager {
   oysterCard: OysterCard;
 
   private busFare = 1.8;
+  private maxFare = 3.2;
 
   constructor(oysterCard: OysterCard) {
     this.oysterCard = oysterCard;
   }
 
   enterStation = (station: Station) => {
+    this.oysterCard.deduct(this.maxFare);
     this.lastEnteredZone = station.zone;
   };
 
   leaveStation = (station: Station) => {
-    const fare = station.zone.getFare(this.lastEnteredZone.number);
-    this.oysterCard.deduct(fare);
+    const reimbursement = station.zone.getFareReturn(
+      this.lastEnteredZone.number
+    );
+
+    this.oysterCard.add(reimbursement);
     this.lastEnteredZone = station.zone;
   };
 
